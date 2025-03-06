@@ -1,12 +1,13 @@
 'use client'
 
 import {useState, useEffect} from 'react';
+import {ApiResponse} from '../types/http/apiResponse';
+import {Person} from '../types/person';
 import axios from 'axios';
-import {ApiResponse} from '../types/apiResponse';
 
 export const useAPI = () => {
-  const [data, setData] = useState<ApiResponse | null>(null);
-  const [history, setHistory] = useState<ApiResponse[]>([]);
+  const [currentPerson, setPerson] = useState<Person | null>(null);
+  const [history, setHistory] = useState<Person[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,12 +17,23 @@ export const useAPI = () => {
 
     try {
       const response = await axios.get<ApiResponse>('https://randomuser.me/api/');
-      setData(response.data);
-      setHistory((prevHistory) => [...prevHistory, response.data]);
+      const data = response.data.results[0]
+      const person: Person = {
+          name: data.name.first + " " + data.name.last,
+          email: data.email,
+          birthday: data.dob.date,
+          phone: data.phone,
+          password: data.login.password
+      }
+      
+      setPerson(person);
+      setHistory((prevHistory) => [...prevHistory, person]);
+
     } catch(err) { 
-      setError(err instanceof Error ? err.message : 'An error ocurred');
+        setError(err instanceof Error ? err.message : 'An error ocurred');
+
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
 
@@ -29,5 +41,5 @@ export const useAPI = () => {
     fetchData();
   }, []);
 
-  return { data, history, loading, error };
+  return { currentPerson, history, loading, error, fetchData };
 };
