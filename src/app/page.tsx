@@ -11,25 +11,28 @@ export default function Home() {
   }
 
   return (
-    <div>
-      <div className="fixed top-4 left-4">
-        <h1>History of People</h1>
+    <div className="grid grid-cols-[auto_1fr_auto] min-h-screen ">
+      <aside className="p-6 border-r">
+        <h1 className="text-lg font-bold mb-4">History of People</h1>
         <pre>{JSON.stringify(history,null, 2)}</pre>
+      </aside>
+
+      <main className="flex flex-col justify-center items-center p-8">
+        <div>
+          <h1 className="text-xl mb-4">Current person</h1>
+          <pre>{JSON.stringify(currentPerson, null, 2)}</pre>
+        </div>
+
+        {loading && ( <div className="mt-4 text-center">Loading... </div>)}
+
+      </main>
+
+      <div className="flex justify-end items-start p-4">
+        <button onClick={fetchData} className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+          Fetch Data
+        </button>
       </div>
 
-      <main>
-        <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-          <button onClick={fetchData} className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            Fetch Data
-          </button>
-          {loading && <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>Loading...</div>}
-
-          <div>
-            <h1 className="text-xl">Current person</h1>
-            <pre>{JSON.stringify(currentPerson, null, 2)}</pre>
-          </div>
-        </div>
-      </main>
     </div>
   );
 }
